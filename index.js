@@ -1,9 +1,9 @@
 import express from "express";
-import { createServer } from "http";
+import {createServer} from "http";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./database/connection.js";
-import { initSocket } from "./socket/socket.js";
+import {initSocket} from "./socket/socket.js";
 
 // Import routes
 import userRoutes from "./routes/user.routes.js";
@@ -14,6 +14,7 @@ import upvoteRoutes from "./routes/upvote.routes.js";
 import mentorProfileRoutes from "./routes/mentorProfile.routes.js";
 import juniorSpacePostRoutes from "./routes/juniorSpacePost.routes.js";
 import adminRoutes from "./routes/admin.routes.js";
+import blogRoutes from "./routes/blog.routes.js";
 
 dotenv.config();
 
@@ -32,7 +33,7 @@ const corsOptions = {
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({extended: true}));
 
 // Initialize Socket.IO
 initSocket(httpServer);
@@ -55,6 +56,7 @@ app.use("/api/upvotes", upvoteRoutes);
 app.use("/api/mentor-profiles", mentorProfileRoutes);
 app.use("/api/junior-space-posts", juniorSpacePostRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/blogs", blogRoutes);
 
 // 404 handler
 app.use((req, res) => {
@@ -83,7 +85,9 @@ const startServer = async () => {
         httpServer.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
             console.log(`Socket.IO is enabled for real-time features`);
-            console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+            console.log(
+                `Environment: ${process.env.NODE_ENV || "development"}`
+            );
         });
     } catch (error) {
         console.error("Failed to connect to database:", error);
