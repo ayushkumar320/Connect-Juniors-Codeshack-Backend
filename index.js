@@ -1,9 +1,9 @@
 import express from "express";
-import { createServer } from "http";
+import {createServer} from "http";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./database/connection.js";
-import { initSocket } from "./socket/socket.js";
+import {initSocket} from "./socket/socket.js";
 
 // Import routes
 import userRoutes from "./routes/user.routes.js";
@@ -76,12 +76,12 @@ app.use((err, req, res, next) => {
         error: process.env.NODE_ENV === "development" ? err.message : undefined,
     });
 });
+
+// Start server
+const PORT = process.env.PORT || 5000;
 httpServer.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-    console.log(`Socket.IO is enabled for real-time features
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+    console.log(`Socket.IO is enabled for real-time features`);
     console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
 });
 
