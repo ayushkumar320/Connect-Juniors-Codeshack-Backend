@@ -7,7 +7,8 @@ const JWT_EXPIRY = process.env.JWT_EXPIRY || "7d";
 
 export const register = async (req, res) => {
     try {
-        const {name, email, password, role = "junior", bio = ""} = req.body;
+        const {name, email, password, bio = ""} = req.body;
+        const role = "junior"; // Regular registration only allows junior role
 
         const existingUser = await User.findOne({email});
         if (existingUser) {
@@ -26,7 +27,7 @@ export const register = async (req, res) => {
             passwordHash,
             role,
             bio,
-            isMentorApproved: role === "junior",
+            isMentorApproved: true, // Juniors are auto-approved
         });
 
         await user.save();

@@ -1,7 +1,7 @@
 {
     "info": {
         "name": "CodeShack Junior Guidance Platform API",
-        "description": "Complete API collection for the CodeShack backend with sample data for testing",
+        "description": "Complete API collection for the CodeShack backend with sample data for testing.\n\n## Real-Time Features (Socket.IO)\n\n### Connection\n```javascript\nconst socket = io('http://localhost:5000');\n```\n\n### Comment Events\n- `join-doubt` - Join a doubt room to receive real-time comments\n- `leave-doubt` - Leave doubt room\n- `new-comment` - Emitted when new comment is created\n- `comment-deleted` - Emitted when comment is deleted\n\n### Junior Space Events\n- `join-junior-space` - Join junior space to receive real-time posts\n- `leave-junior-space` - Leave junior space\n- `new-post` - Emitted when new post is created\n- `post-deleted` - Emitted when post is deleted\n\n### Example Usage\n```javascript\n// Join doubt discussion\nsocket.emit('join-doubt', doubtId);\nsocket.on('new-comment', (comment) => {\n  console.log('New comment:', comment);\n});\n\n// Join junior space\nsocket.emit('join-junior-space');\nsocket.on('new-post', (post) => {\n  console.log('New post:', post);\n});\n```",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
@@ -20,34 +20,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n  \"name\": \"Alice Junior\",\n  \"email\": \"alice@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"junior\",\n  \"bio\": \"Aspiring developer learning web development\"\n}"
-                        },
-                        "url": {
-                            "raw": "{{baseUrl}}/api/users/register",
-                            "host": [
-                                "{{baseUrl}}"
-                            ],
-                            "path": [
-                                "api",
-                                "users",
-                                "register"
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "Register Mentor",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\n  \"name\": \"Bob Mentor\",\n  \"email\": \"bob@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"mentor\",\n  \"bio\": \"Senior developer with 10 years of experience in JavaScript and Node.js\"\n}"
+                            "raw": "{\n  \"name\": \"Alice Junior\",\n  \"email\": \"alice@example.com\",\n  \"password\": \"password123\",\n  \"bio\": \"Aspiring developer learning web development\"\n}"
                         },
                         "url": {
                             "raw": "{{baseUrl}}/api/users/register",
@@ -1012,6 +985,145 @@
             "name": "Mentor Profiles",
             "item": [
                 {
+                    "name": "Register Mentor (Protected)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Bob Mentor\",\n  \"email\": \"bob@example.com\",\n  \"password\": \"password123\",\n  \"bio\": \"Senior developer with 10 years of experience in JavaScript and Node.js\",\n  \"secretKey\": \"{{mentorSecretKey}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/register-mentor",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "register-mentor"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get All Approved Mentors",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/mentor-profiles/approved/all?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "mentor-profiles",
+                                "approved",
+                                "all"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Pending Mentor Approvals",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/mentor-profiles/pending/all?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "mentor-profiles",
+                                "pending",
+                                "all"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Top Mentors",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/mentor-profiles/top/list?limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "mentor-profiles",
+                                "top",
+                                "list"
+                            ],
+                            "query": [
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Get Mentors by Expertise",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/mentor-profiles/expertise/javascript?page=1&limit=10",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "mentor-profiles",
+                                "expertise",
+                                "javascript"
+                            ],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
                     "name": "Create Mentor Profile",
                     "request": {
                         "method": "POST",
@@ -1259,6 +1371,33 @@
             "name": "Admin",
             "item": [
                 {
+                    "name": "Register Admin (Protected)",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Charlie Admin\",\n  \"email\": \"charlie@example.com\",\n  \"password\": \"password123\",\n  \"bio\": \"Platform administrator\",\n  \"secretKey\": \"{{adminSecretKey}}\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/users/register-admin",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "users",
+                                "register-admin"
+                            ]
+                        }
+                    }
+                },
+                {
                     "name": "Approve Mentor",
                     "request": {
                         "method": "POST",
@@ -1377,6 +1516,158 @@
                             ]
                         }
                     }
+                },
+                {
+                    "name": "Delete Doubt (Admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{adminToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/doubt/{{doubtId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "doubt",
+                                "{{doubtId}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Answer (Admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{adminToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/answer/{{answerId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "answer",
+                                "{{answerId}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Comment (Admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{adminToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/comment/{{commentId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "comment",
+                                "{{commentId}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Delete Junior Post (Admin)",
+                    "request": {
+                        "method": "DELETE",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{adminToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/junior-post/{{postId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "junior-post",
+                                "{{postId}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Ban User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{adminToken}}"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"reason\": \"Violation of community guidelines\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/ban-user/{{userId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "ban-user",
+                                "{{userId}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "Unban User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Authorization",
+                                "value": "Bearer {{adminToken}}"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/admin/unban-user/{{userId}}",
+                            "host": [
+                                "{{baseUrl}}"
+                            ],
+                            "path": [
+                                "api",
+                                "admin",
+                                "unban-user",
+                                "{{userId}}"
+                            ]
+                        }
+                    }
                 }
             ]
         }
@@ -1425,6 +1716,16 @@
         {
             "key": "adminToken",
             "value": "",
+            "type": "string"
+        },
+        {
+            "key": "mentorSecretKey",
+            "value": "mentor_secret_key_change_in_production_2024",
+            "type": "string"
+        },
+        {
+            "key": "adminSecretKey",
+            "value": "admin_super_secret_key_change_in_production_2024",
             "type": "string"
         }
     ]

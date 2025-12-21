@@ -8,6 +8,12 @@ import {
 
 const router = express.Router();
 
+// List operations (specific routes first)
+router.get("/approved/all", mentorProfileController.getAllApprovedMentors);
+router.get("/pending/all", mentorProfileController.getPendingMentorApprovals);
+router.get("/top/list", mentorProfileController.getTopMentors);
+router.get("/expertise/:tag", mentorProfileController.getMentorsByExpertise);
+
 // Mentor Profile operations
 router.post(
     "/:mentorId",

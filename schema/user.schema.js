@@ -1,12 +1,29 @@
 import {z} from "zod";
 
-// User Registration Schema
+// User Registration Schema (Junior only)
 const registerSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters").max(100),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    role: z.enum(["junior", "mentor"]).default("junior"),
     bio: z.string().max(500).optional(),
+});
+
+// Mentor Registration Schema (Requires Secret Key)
+const registerMentorSchema = z.object({
+    name: z.string().min(2, "Name must be at least 2 characters").max(100),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    bio: z.string().max(500).optional(),
+    secretKey: z.string().min(1, "Secret key is required"),
+});
+
+// Admin Registration Schema (Requires Secret Key)
+const registerAdminSchema = z.object({
+    name: z.string().min(2, "Name must be at least 2 characters").max(100),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    bio: z.string().max(500).optional(),
+    secretKey: z.string().min(1, "Secret key is required"),
 });
 
 // User Login Schema
@@ -21,4 +38,10 @@ const updateProfileSchema = z.object({
     bio: z.string().max(500).optional(),
 });
 
-export {registerSchema, loginSchema, updateProfileSchema};
+export {
+    registerSchema,
+    registerMentorSchema,
+    registerAdminSchema,
+    loginSchema,
+    updateProfileSchema,
+};

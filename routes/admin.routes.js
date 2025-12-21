@@ -17,6 +17,42 @@ router.post(
     requireRole("admin"),
     adminController.rejectMentor
 );
+router.delete(
+    "/doubt/:doubtId",
+    authenticate,
+    requireRole("admin"),
+    adminController.deleteDoubt
+);
+router.delete(
+    "/answer/:answerId",
+    authenticate,
+    requireRole("admin"),
+    adminController.deleteAnswer
+);
+router.delete(
+    "/comment/:commentId",
+    authenticate,
+    requireRole("admin"),
+    adminController.deleteComment
+);
+router.delete(
+    "/junior-post/:postId",
+    authenticate,
+    requireRole("admin"),
+    adminController.deleteJuniorPost
+);
+router.post(
+    "/ban-user/:userId",
+    authenticate,
+    requireRole("admin"),
+    adminController.banUser
+);
+router.post(
+    "/unban-user/:userId",
+    authenticate,
+    requireRole("admin"),
+    adminController.unbanUser
+);
 router.get(
     "/actions",
     authenticate,
