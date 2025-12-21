@@ -7,6 +7,7 @@ import Comment from "../models/comment.model.js";
 import JuniorSpacePost from "../models/juniorSpacePost.model.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 
 const SALT_ROUNDS = 10;
 const JWT_EXPIRY = process.env.JWT_EXPIRY || "7d";
@@ -83,20 +84,11 @@ export const registerAdmin = async (req, res) => {
 
 export const approveMentor = async (req, res) => {
     try {
-        const {adminId} = req.params;
-        const {mentorUserId} = req.body;
-
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Only admins can perform this action",
-                code: "UNAUTHORIZED",
-            });
-        }
+        const adminId = req.user.userId; // Get admin ID from JWT token
+        const {mentorId} = req.params; // Get mentor ID from URL params
 
         const mentorProfile = await MentorProfile.findOne({
-            userId: mentorUserId,
+            userId: mentorId,
         });
         if (!mentorProfile) {
             return res.status(404).json({
@@ -109,14 +101,14 @@ export const approveMentor = async (req, res) => {
         mentorProfile.approvedByAdmin = true;
         await mentorProfile.save();
 
-        const mentor = await User.findById(mentorUserId);
+        const mentor = await User.findById(mentorId);
         mentor.isMentorApproved = true;
         await mentor.save();
 
         const adminAction = new AdminAction({
             adminId,
             actionType: "approve_mentor",
-            targetId: mentorUserId,
+            targetId: mentorId,
         });
 
         await adminAction.save();
@@ -125,7 +117,7 @@ export const approveMentor = async (req, res) => {
             success: true,
             message: "Mentor approved successfully",
             data: {
-                mentorId: mentorUserId,
+                mentorId: mentorId,
                 actionId: adminAction._id,
             },
         });
@@ -140,20 +132,11 @@ export const approveMentor = async (req, res) => {
 
 export const rejectMentor = async (req, res) => {
     try {
-        const {adminId} = req.params;
-        const {mentorUserId} = req.body;
-
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Only admins can perform this action",
-                code: "UNAUTHORIZED",
-            });
-        }
+        const adminId = req.user.userId; // Get admin ID from JWT token
+        const {mentorId} = req.params; // Get mentor ID from URL params
 
         const mentorProfile = await MentorProfile.findOneAndDelete({
-            userId: mentorUserId,
+            userId: mentorId,
         });
         if (!mentorProfile) {
             return res.status(404).json({
@@ -166,7 +149,7 @@ export const rejectMentor = async (req, res) => {
         const adminAction = new AdminAction({
             adminId,
             actionType: "reject_mentor",
-            targetId: mentorUserId,
+            targetId: mentorId,
         });
 
         await adminAction.save();
@@ -175,7 +158,7 @@ export const rejectMentor = async (req, res) => {
             success: true,
             message: "Mentor rejected and profile deleted",
             data: {
-                mentorId: mentorUserId,
+                mentorId: mentorId,
                 actionId: adminAction._id,
             },
         });
@@ -190,17 +173,8 @@ export const rejectMentor = async (req, res) => {
 
 export const deleteDoubt = async (req, res) => {
     try {
-        const {adminId} = req.params;
-        const {doubtId} = req.body;
-
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Only admins can perform this action",
-                code: "UNAUTHORIZED",
-            });
-        }
+        const adminId = req.user.userId; // Get admin ID from JWT token
+        const {doubtId} = req.params; // Get doubt ID from URL params
 
         const doubt = await Doubt.findByIdAndDelete(doubtId);
         if (!doubt) {
@@ -241,17 +215,8 @@ export const deleteDoubt = async (req, res) => {
 
 export const deleteAnswer = async (req, res) => {
     try {
-        const {adminId} = req.params;
-        const {answerId} = req.body;
-
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Only admins can perform this action",
-                code: "UNAUTHORIZED",
-            });
-        }
+        const adminId = req.user.userId; // Get admin ID from JWT token
+        const {answerId} = req.params; // Get answer ID from URL params
 
         const answer = await Answer.findByIdAndDelete(answerId);
         if (!answer) {
@@ -289,17 +254,8 @@ export const deleteAnswer = async (req, res) => {
 
 export const deleteComment = async (req, res) => {
     try {
-        const {adminId} = req.params;
-        const {commentId} = req.body;
-
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Only admins can perform this action",
-                code: "UNAUTHORIZED",
-            });
-        }
+        const adminId = req.user.userId; // Get admin ID from JWT token
+        const {commentId} = req.params; // Get comment ID from URL params
 
         const comment = await Comment.findByIdAndDelete(commentId);
         if (!comment) {
@@ -339,17 +295,8 @@ export const deleteComment = async (req, res) => {
 
 export const deleteJuniorPost = async (req, res) => {
     try {
-        const {adminId} = req.params;
-        const {postId} = req.body;
-
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Only admins can perform this action",
-                code: "UNAUTHORIZED",
-            });
-        }
+        const adminId = req.user.userId; // Get admin ID from JWT token
+        const {postId} = req.params; // Get post ID from URL params
 
         const post = await JuniorSpacePost.findByIdAndDelete(postId);
         if (!post) {
@@ -387,17 +334,8 @@ export const deleteJuniorPost = async (req, res) => {
 
 export const banUser = async (req, res) => {
     try {
-        const {adminId} = req.params;
-        const {userId} = req.body;
-
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Only admins can perform this action",
-                code: "UNAUTHORIZED",
-            });
-        }
+        const adminId = req.user.userId; // Get admin ID from JWT token
+        const {userId} = req.params; // Get user ID from URL params
 
         const user = await User.findById(userId);
         if (!user) {
@@ -435,17 +373,8 @@ export const banUser = async (req, res) => {
 
 export const unbanUser = async (req, res) => {
     try {
-        const {adminId} = req.params;
-        const {userId} = req.body;
-
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Only admins can perform this action",
-                code: "UNAUTHORIZED",
-            });
-        }
+        const adminId = req.user.userId; // Get admin ID from JWT token
+        const {userId} = req.params; // Get user ID from URL params
 
         const user = await User.findById(userId);
         if (!user) {
@@ -483,18 +412,9 @@ export const unbanUser = async (req, res) => {
 
 export const getAdminActions = async (req, res) => {
     try {
-        const {adminId} = req.params;
+        const adminId = req.user.userId; // Get admin ID from JWT token
         const {page = 1, limit = 20, actionType} = req.query;
         const skip = (parseInt(page) - 1) * parseInt(limit);
-
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Only admins can perform this action",
-                code: "UNAUTHORIZED",
-            });
-        }
 
         const filter = {adminId};
         if (actionType) filter.actionType = actionType;
@@ -529,20 +449,11 @@ export const getAdminActions = async (req, res) => {
 
 export const getAdminStats = async (req, res) => {
     try {
-        const {adminId} = req.params;
-
-        const admin = await User.findById(adminId);
-        if (!admin || admin.role !== "admin") {
-            return res.status(403).json({
-                success: false,
-                message: "Only admins can perform this action",
-                code: "UNAUTHORIZED",
-            });
-        }
+        const adminId = req.user.userId; // Get admin ID from JWT token
 
         const totalActions = await AdminAction.countDocuments({adminId});
         const actionBreakdown = await AdminAction.aggregate([
-            {$match: {adminId: admin._id}},
+            {$match: {adminId: new mongoose.Types.ObjectId(adminId)}}, // Convert to ObjectId for aggregation
             {$group: {_id: "$actionType", count: {$sum: 1}}},
         ]);
 
